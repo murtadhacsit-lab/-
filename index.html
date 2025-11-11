@@ -733,6 +733,7 @@
             margin-bottom: 15px;
         }
 
+        /* التعديلات الأساسية للصورة */
         .receipt-logo {
             position: absolute;
             left: 30px;
@@ -740,6 +741,10 @@
             width: 200px;
             height: 120px;
             opacity: 0.9;
+            /* التعديلات الجديدة لضمان ظهور الصورة كاملة */
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
         }
 
         .receipt-details {
@@ -772,13 +777,12 @@
 
         .receipt-table {
             width: 100%;
-               min-width: 600px; /* لا يقل عن هذا العرض */
-    max-width: 1000px;
+            min-width: 600px;
+            max-width: 1000px;
             border-collapse: collapse;
-margin:  auto 0px;  /* لتحريك الجدول لليسار */
+            margin: auto 0px;
             font-size: 14px;
             table-layout: fixed;
-            
         }
 
         .receipt-table th {
@@ -958,6 +962,84 @@ margin:  auto 0px;  /* لتحريك الجدول لليسار */
             }
             to {
                 transform: rotate(360deg);
+            }
+        }
+        
+        /* استعلامات الوسائط لتحسين العرض على الشاشات الصغيرة */
+        @media (max-width: 900px) {
+            .invoice-receipt {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .receipt-logo {
+                width: 180px;
+                height: auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .invoice-receipt {
+                width: 100%;
+                padding: 15px;
+            }
+            
+            .receipt-logo {
+                position: relative;
+                left: 0;
+                top: 0;
+                width: 150px;
+                margin: 0 auto 15px;
+                display: block;
+            }
+            
+            .receipt-header {
+                text-align: center;
+            }
+            
+            .receipt-table {
+                min-width: 100%;
+                font-size: 12px;
+            }
+            
+            .receipt-table th, 
+            .receipt-table td {
+                padding: 8px 5px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .invoice-receipt {
+                padding: 10px;
+            }
+            
+            .receipt-logo {
+                width: 120px;
+            }
+            
+            .receipt-header h1 {
+                font-size: 22px;
+            }
+            
+            .receipt-header h2 {
+                font-size: 18px;
+            }
+            
+            .receipt-details {
+                flex-direction: column;
+            }
+            
+            .receipt-detail-group {
+                min-width: 100%;
+            }
+            
+            .receipt-table {
+                font-size: 10px;
+            }
+            
+            .receipt-table th, 
+            .receipt-table td {
+                padding: 6px 3px;
             }
         }
     </style>
