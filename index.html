@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>موقع قطع الوصل - مكتب الأنوار</title>
+    <link rel="icon" type="image/png" href="e.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- استخدام إصدار واحد متوافق من jsPDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
-        /* جميع أنماط CSS السابقة تبقى كما هي */
         :root {
             --primary-color: #1a5276;
             --secondary-color: #3498db;
@@ -48,7 +46,6 @@
             line-height: 1.6;
             min-height: 100vh;
             transition: var(--transition);
-            direction: rtl;
         }
         
         .container {
@@ -69,6 +66,7 @@
             box-shadow: var(--shadow);
             position: relative;
             overflow: hidden;
+            animation: slideDown 0.8s ease-out;
         }
         
         .header-controls {
@@ -109,6 +107,7 @@
             object-fit: cover;
             border: 3px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
         }
         
         .header-text h1 {
@@ -128,6 +127,7 @@
             box-shadow: var(--shadow);
             margin-bottom: 25px;
             transition: var(--transition);
+            animation: fadeIn 0.8s ease-out;
         }
         
         .preview-section {
@@ -136,6 +136,7 @@
             border-radius: 10px;
             box-shadow: var(--shadow);
             transition: var(--transition);
+            animation: fadeIn 0.8s ease-out 0.2s both;
         }
         
         .section-title {
@@ -172,7 +173,6 @@
             background-color: var(--card-bg);
             color: var(--text-color);
             transition: var(--transition);
-            text-align: right;
         }
         
         input:focus, select:focus {
@@ -272,12 +272,6 @@
             border-radius: 8px;
             position: relative;
             min-height: 500px;
-            background-image: url('e.png');
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: 200px;
-            background-blend-mode: overlay;
-            opacity: 0.9;
         }
         
         .invoice-header {
@@ -465,7 +459,6 @@
             z-index: 0;
         }
         
-        /* إزالة قالب JPG وإضافة تصميم PDF */
         .floating-action {
             position: fixed;
             bottom: 30px;
@@ -581,62 +574,404 @@
             }
         }
         
-        /* تثبيت رؤوس الأعمدة في الجدول الرئيسي */
         .sticky-header {
             position: sticky;
             top: 0;
             z-index: 100;
         }
+        
+        /* تنسيق خاص للطباعة */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .print-section, .print-section * {
+                visibility: visible;
+            }
+            
+            .print-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 0;
+                margin: 0;
+                background: white;
+                font-size: 12pt;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            .invoice-print {
+                width: 100%;
+                padding: 15px;
+                font-family: 'Arial', sans-serif;
+                direction: rtl;
+            }
+            
+            .invoice-print-header {
+                text-align: center;
+                margin-bottom: 20px;
+                border-bottom: 2px solid #000;
+                padding-bottom: 10px;
+            }
+            
+            .invoice-print-header h2 {
+                font-size: 18pt;
+                margin-bottom: 10px;
+                color: #000;
+            }
+            
+            .invoice-print-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 15px 0;
+                font-size: 10pt;
+            }
+            
+            .invoice-print-table th, 
+            .invoice-print-table td {
+                border: 1px solid #000;
+                padding: 6px;
+                text-align: center;
+            }
+            
+            .invoice-print-table th {
+                background-color: #f0f0f0;
+                font-weight: bold;
+            }
+            
+            .invoice-print-total {
+                margin-top: 20px;
+                font-weight: bold;
+                font-size: 12pt;
+                padding: 10px;
+                background-color: #f9f9f9;
+                border-right: 4px solid #000;
+            }
+            
+            .page-break {
+                page-break-after: always;
+            }
+        }
 
-        /* إضافة لتحسين تجربة المستخدم أثناء التحميل */
-        .loading {
+        /* الأنيميشن الجديدة */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .bounce {
+            animation: bounce 1s;
+        }
+
+        /* تصميم الوصل المحسّن */
+        .invoice-receipt {
+            width: 800px;
+            min-height: 1000px;
+            margin: 0 auto;
+            background: white;
+            border: 2px solid #1a5276;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            padding: 30px;
+            color: #333;
+            direction: rtl;
+        }
+
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px double #1a5276;
+            position: relative;
+        }
+
+        .receipt-header h1 {
+            color: #1a5276;
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .receipt-header h2 {
+            color: #e74c3c;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .receipt-logo {
+            position: absolute;
+            left: 30px;
+            top: 0;    
+            width: 200px;
+            height: 120px;
+            opacity: 0.9;
+        }
+
+        .receipt-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .receipt-detail-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .receipt-detail-item {
+            margin-bottom: 8px;
+            display: flex;
+        }
+
+        .receipt-detail-label {
+            font-weight: bold;
+            min-width: 120px;
+            color: #1a5276;
+        }
+
+        .receipt-detail-value {
+            flex: 1;
+        }
+
+        .receipt-table {
+            width: 100%;
+               min-width: 600px; /* لا يقل عن هذا العرض */
+    max-width: 1000px;
+            border-collapse: collapse;
+margin:  auto 0px;  /* لتحريك الجدول لليسار */
+            font-size: 14px;
+            table-layout: fixed;
+            
+        }
+
+        .receipt-table th {
+            background-color: #1a5276;
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid #ddd;
+        }
+
+        .receipt-table td {
+            padding: 10px 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+            word-wrap: break-word;
+        }
+
+        /* تحسين أبعاد الجدول */
+        .receipt-table th:nth-child(1),
+        .receipt-table td:nth-child(1) {
+            width: 10%;
+        }
+
+        .receipt-table th:nth-child(2),
+        .receipt-table td:nth-child(2) {
+            width: 40%;
+        }
+
+        .receipt-table th:nth-child(3),
+        .receipt-table td:nth-child(3) {
+            width: 15%;
+        }
+
+        .receipt-table th:nth-child(4),
+        .receipt-table td:nth-child(4) {
+            width: 17%;
+        }
+
+        .receipt-table th:nth-child(5),
+        .receipt-table td:nth-child(5) {
+            width: 30%;
+        }
+        
+
+        .receipt-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .receipt-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .receipt-total {
+            margin-top: 25px;
+            text-align: left;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            border-right: 4px solid #1a5276;
+        }
+
+        .receipt-footer {
+            margin-top: 40px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 2px dashed #1a5276;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .receipt-watermark {
+            position: absolute;
+            bottom: 130px;
+            left: 30px;
+            opacity: 0.1;
+            width: 200px;
+            height: 120px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .image-preview-container {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.8);
             z-index: 2000;
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            color: white;
+            padding: 20px;
         }
 
-        .loading.show {
+        .image-preview-container.show {
             display: flex;
+            animation: fadeIn 0.3s ease;
         }
 
-        .spinner {
-            border: 5px solid rgba(255, 255, 255, 0.3);
+        .image-preview-content {
+            max-width: 90%;
+            max-height: 90%;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-preview-content img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .image-preview-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .close-preview {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            border-top: 5px solid #fff;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .close-preview:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .btn-info {
+            background: linear-gradient(to right, #17a2b8, #138496);
+        }
+
+        .preview-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            overflow: auto;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        /* شعار المتصفح */
+        .browser-logo {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            width: 32px;
+            height: 32px;
+            z-index: 1001;
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
 <body>
+    <!-- شعار المتصفح -->
+    <img src="e.png" alt="شعار المتصفح" class="browser-logo">
+
     <div class="progress-bar" id="progressBar"></div>
     
-    <!-- شاشة التحميل -->
-    <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <p>جاري إنشاء ملف PDF...</p>
-    </div>
-    
     <div class="container">
-        <header>
+        <header class="no-print">
             <div class="logo-container">
-                <img src="e.png" alt="شعار الشركة" class="logo" id="logoImage">
+                <img src="e.png" alt="شعار الشركة" class="logo">
                 <div class="header-text">
                     <h1>موقع قطع الوصل الإلكتروني</h1>
                     <p>مكتب الأنوار - نظام الفواتير الذكي</p>
@@ -649,7 +984,7 @@
             </div>
         </header>
 
-        <section class="form-section">
+        <section class="form-section no-print">
             <div class="section-title">
                 <i class="fas fa-edit"></i>
                 <h2>إدخال بيانات الوصل</h2>
@@ -758,26 +1093,34 @@
             </form>
         </section>
 
-        <section class="preview-section">
+        <section class="preview-section no-print">
             <div class="section-title">
                 <i class="fas fa-eye"></i>
                 <h2>معاينة الوصل</h2>
             </div>
-            <div class="invoice-preview" id="invoicePreview">
-                <!-- سيتم ملء المعاينة ديناميكياً -->
+            <div class="preview-container">
+                <div class="invoice-receipt" id="invoiceReceipt">
+                    <!-- سيتم ملء الوصل ديناميكياً -->
+                </div>
             </div>
             <div class="actions">
-                <button class="btn btn-success pulse" id="generatePdf">
-                    <i class="fas fa-file-pdf"></i> إنشاء وتحميل PDF
+                <button class="btn btn-success pulse" id="printInvoice">
+                    <i class="fas fa-print"></i> طباعة الوصل
+                </button>
+                <button class="btn btn-info" id="generateImage">
+                    <i class="fas fa-image"></i> توليد صورة
                 </button>
                 <button class="btn" id="resetForm">
                     <i class="fas fa-redo"></i> مسح النموذج
                 </button>
             </div>
         </section>
+
+        <!-- قسم الطباعة المخفي -->
+        <div id="printContainer" class="print-section" style="display: none;"></div>
     </div>
 
-    <div class="floating-action">
+    <div class="floating-action no-print">
         <button id="scrollToTop">
             <i class="fas fa-arrow-up"></i>
         </button>
@@ -788,66 +1131,31 @@
         <span id="notificationText">تم العملية بنجاح!</span>
     </div>
 
+    <!-- معاينة الصورة -->
+    <div class="image-preview-container" id="imagePreviewContainer">
+        <button class="close-preview" id="closePreview">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="image-preview-content">
+            <img id="previewImage" src="" alt="معاينة الصورة">
+        </div>
+        <div class="image-preview-actions">
+            <button class="btn btn-success" id="downloadImage">
+                <i class="fas fa-download"></i> تحميل الصورة
+            </button>
+            <button class="btn" id="closeImagePreview">
+                <i class="fas fa-times"></i> إغلاق
+            </button>
+        </div>
+    </div>
+
     <script>
         // تهيئة المتغيرات
         let invoiceCounter = localStorage.getItem('invoiceCounter') ? parseInt(localStorage.getItem('invoiceCounter')) : 1;
         let isDarkMode = localStorage.getItem('darkMode') === 'true';
-        let logoData = null;
-
-        // تحميل الشعار كبيانات base64
-        function loadLogo() {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.crossOrigin = 'Anonymous';
-                img.src = 'e.png';
-                
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    ctx.drawImage(img, 0, 0);
-                    
-                    try {
-                        logoData = canvas.toDataURL('image/png');
-                        resolve(logoData);
-                    } catch (e) {
-                        reject(e);
-                    }
-                };
-                
-                img.onerror = function() {
-                    console.log('لا يمكن تحميل الشعار، سيتم إنشاء PDF بدون شعار');
-                    resolve(null);
-                };
-            });
-        }
-
-        // تحويل النص العربي إلى ترميز صحيح لـ PDF
-        function fixArabicText(text) {
-            if (!text) return '';
-            
-            // استبدال الأحرف العربية التي قد تسبب مشاكل
-            return text
-                .replace(/ي/g, 'ى')
-                .replace(/ك/g, 'ك')
-                .replace(/ة/g, 'ة');
-        }
-
-        // إظهار شاشة التحميل
-        function showLoading() {
-            document.getElementById('loading').classList.add('show');
-        }
-
-        // إخفاء شاشة التحميل
-        function hideLoading() {
-            document.getElementById('loading').classList.remove('show');
-        }
+        let currentGeneratedImage = null;
 
         document.addEventListener('DOMContentLoaded', function() {
-            // تحميل الشعار
-            loadLogo();
-            
             // تطبيق وضع السمة
             applyTheme();
             
@@ -863,14 +1171,14 @@
             addDefaultItems();
             
             // تحديث المعاينة
-            updatePreview();
+            updateReceipt();
             
             // إضافة الأحداث
             document.getElementById('addItem').addEventListener('click', function() {
                 addNewItemRow();
             });
             
-            document.getElementById('generatePdf').addEventListener('click', generatePdf);
+            document.getElementById('printInvoice').addEventListener('click', printInvoice);
             
             document.getElementById('resetForm').addEventListener('click', resetForm);
             
@@ -884,6 +1192,12 @@
             document.getElementById('scrollToTop').addEventListener('click', function() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
+            
+            document.getElementById('generateImage').addEventListener('click', generateImage);
+            
+            document.getElementById('closePreview').addEventListener('click', closeImagePreview);
+            document.getElementById('closeImagePreview').addEventListener('click', closeImagePreview);
+            document.getElementById('downloadImage').addEventListener('click', downloadImage);
             
             // إظهار/إخفاء زر العودة للأعلى
             window.addEventListener('scroll', function() {
@@ -901,7 +1215,7 @@
             // تحديث المعاينة عند تغيير أي حقل
             document.getElementById('invoiceForm').addEventListener('input', function() {
                 updateCalculations();
-                updatePreview();
+                updateReceipt();
             });
             
             // إضافة تأثيرات للحقول عند التركيز
@@ -978,7 +1292,7 @@
             });
             
             updateCalculations();
-            updatePreview();
+            updateReceipt();
         }
         
         // إضافة صف جديد للمواد
@@ -988,9 +1302,9 @@
             
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td><input type="text" class="item-name" value="${name}" onchange="updateCalculations(); updatePreview();"></td>
-                <td><input type="number" class="item-quantity" value="${quantity}" min="1" onchange="updateCalculations(); updatePreview();"></td>
-                <td><input type="number" class="item-price" value="${price}" min="0" onchange="updateCalculations(); updatePreview();"></td>
+                <td><input type="text" class="item-name" value="${name}" onchange="updateCalculations(); updateReceipt();"></td>
+                <td><input type="number" class="item-quantity" value="${quantity}" min="1" onchange="updateCalculations(); updateReceipt();"></td>
+                <td><input type="number" class="item-price" value="${price}" min="0" onchange="updateCalculations(); updateReceipt();"></td>
                 <td class="item-total">0</td>
                 <td>
                     <div class="item-controls">
@@ -1014,7 +1328,7 @@
             const row = button.closest('tr');
             row.remove();
             updateCalculations();
-            updatePreview();
+            updateReceipt();
             showNotification('تم حذف المادة');
         }
         
@@ -1041,9 +1355,9 @@
             document.getElementById('summaryTotal').textContent = totalAmount.toLocaleString();
         }
         
-        // تحديث المعاينة
-        function updatePreview() {
-            const preview = document.getElementById('invoicePreview');
+        // تحديث الوصل
+        function updateReceipt() {
+            const receipt = document.getElementById('invoiceReceipt');
             const paymentType = document.getElementById('paymentType').value;
             const customerName = document.getElementById('customerName').value;
             const invoiceNumber = document.getElementById('invoiceNumber').value;
@@ -1054,280 +1368,242 @@
             
             let itemsHtml = '';
             const rows = document.querySelectorAll('#itemsBody tr');
+            let totalAmount = 0;
             
             rows.forEach((row, index) => {
                 const name = row.querySelector('.item-name').value;
                 const quantity = row.querySelector('.item-quantity').value;
-                const price = parseInt(row.querySelector('.item-price').value).toLocaleString() || '0';
-                const total = (parseInt(row.querySelector('.item-quantity').value) * parseInt(row.querySelector('.item-price').value)).toLocaleString() || '0';
+                const price = parseInt(row.querySelector('.item-price').value) || 0;
+                const total = (parseInt(row.querySelector('.item-quantity').value) * parseInt(row.querySelector('.item-price').value)) || 0;
+                totalAmount += total;
                 
                 itemsHtml += `
                     <tr>
                         <td>${index + 1}</td>
                         <td>${name}</td>
                         <td>${quantity}</td>
-                        <td>${price}</td>
-                        <td>${total}</td>
+                        <td>${price.toLocaleString()}</td>
+                        <td>${total.toLocaleString()}</td>
                     </tr>
                 `;
             });
             
-            const totalAmount = document.getElementById('summaryTotal').textContent;
-            
-            preview.innerHTML = `
-                <div class="invoice-header">
+            receipt.innerHTML = `
+                <div class="receipt-header">
+                    <img src="e.png" alt="شعار الشركة" class="receipt-logo">
+                    <h1>مكتب الأنوار</h1>
                     <h2>عرض السعر / ${paymentType}</h2>
-                    <p>حضرة السيد/ ${customerName || '______________'}</p>
-                    <p>العنوان / النخيلة الغربية</p>
-                    <p>رقم القائمة / ${invoiceNumber} | تاريخ القائمة / ${invoiceDate} | الهاتف / ${phone}</p>
                 </div>
                 
-                <div class="table-container">
-                    <table class="invoice-table">
-                        <thead>
-                            <tr>
-                                <th>التسلسل</th>
-                                <th>المســــــادة</th>
-                                <th>العدد</th>
-                                <th>الســــــعر (بالدينار العراقي)</th>
-                                <th>المجــــــموع</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${itemsHtml}
-                        </tbody>
-                    </table>
+                <div class="receipt-details">
+                    <div class="receipt-detail-group">
+                        <div class="receipt-detail-item">
+                            <span class="receipt-detail-label">حضرة السيد:</span>
+                            <span class="receipt-detail-value">${customerName || '______________'}</span>
+                        </div>
+                        <div class="receipt-detail-item">
+                            <span class="receipt-detail-label">العنوان:</span>
+                            <span class="receipt-detail-value">النخيلة الغربية</span>
+                        </div>
+                    </div>
+                    <div class="receipt-detail-group">
+                        <div class="receipt-detail-item">
+                            <span class="receipt-detail-label">رقم القائمة:</span>
+                            <span class="receipt-detail-value">${invoiceNumber}</span>
+                        </div>
+                        <div class="receipt-detail-item">
+                            <span class="receipt-detail-label">تاريخ القائمة:</span>
+                            <span class="receipt-detail-value">${invoiceDate}</span>
+                        </div>
+                        <div class="receipt-detail-item">
+                            <span class="receipt-detail-label">الهاتف:</span>
+                            <span class="receipt-detail-value">${phone}</span>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="total-section">
-                    <p>المــجــــوع / ${totalAmount} دينار عراقي</p>
-                    <p>المــظم / ${preparedBy}</p>
+                <table class="receipt-table">
+                    <thead>
+                        <tr>
+                            <th>التسلسل</th>
+                            <th>المســــــادة</th>
+                            <th>العدد</th>
+                            <th>الســــــعر (دينار)</th>
+                            <th>المجــــــموع (دينار)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsHtml}
+                    </tbody>
+                </table>
+                
+                <div class="receipt-total">
+                    <p>المــجــــوع / ${totalAmount.toLocaleString()} دينار عراقي</p>
+                    <p>المنــظم / ${preparedBy}</p>
                     ${supplier ? `<p>المجهز / ${supplier}</p>` : ''}
                 </div>
+                
+                <div class="receipt-footer">
+                    <p>شكراً لتعاملكم مع مكتب الأنوار</p>
+                    <p>هذا الوصل تم إنشاؤه إلكترونياً</p>
+                </div>
+                
+                <img src="e.png" alt="العلامة المائية" class="receipt-watermark">
             `;
         }
         
-        // إنشاء PDF
-        function generatePdf() {
+        // طباعة الفاتورة
+        function printInvoice() {
             const customerName = document.getElementById('customerName').value;
-            const invoiceNumber = document.getElementById('invoiceNumber').value;
             
             if (!customerName) {
                 showNotification('يرجى إدخال اسم الزبون أولاً');
                 return;
             }
             
-            // إظهار شاشة التحميل
-            showLoading();
+            // جمع البيانات من النموذج
+            const paymentType = document.getElementById('paymentType').value;
+            const invoiceNumber = document.getElementById('invoiceNumber').value;
+            const invoiceDate = document.getElementById('invoiceDate').value;
+            const phone = document.getElementById('phone').value;
+            const supplier = document.getElementById('supplier').value || 'غير محدد';
+            const preparedBy = document.getElementById('preparedBy').value;
             
-            try {
-                // التأكد من أن مكتبة jsPDF محملة
-                if (typeof jspdf === 'undefined') {
-                    throw new Error('مكتبة jsPDF غير محملة. يرجى التحقق من اتصال الإنترنت');
-                }
+            // جمع بيانات المواد
+            let itemsHtml = '';
+            const rows = document.querySelectorAll('#itemsBody tr');
+            let totalAmount = 0;
+            
+            rows.forEach((row, index) => {
+                const name = row.querySelector('.item-name').value;
+                const quantity = row.querySelector('.item-quantity').value;
+                const price = parseInt(row.querySelector('.item-price').value) || 0;
+                const total = (parseInt(row.querySelector('.item-quantity').value) * parseInt(row.querySelector('.item-price').value)) || 0;
+                totalAmount += total;
                 
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF({
-                    orientation: 'portrait',
-                    unit: 'mm',
-                    format: 'a4'
-                });
-                
-                // جمع البيانات من النموذج
-                const paymentType = document.getElementById('paymentType').value;
-                const invoiceDate = document.getElementById('invoiceDate').value;
-                const phone = document.getElementById('phone').value;
-                const supplier = document.getElementById('supplier').value || 'غير محدد';
-                const preparedBy = document.getElementById('preparedBy').value;
-                const totalAmount = document.getElementById('summaryTotal').textContent;
-                
-                // جمع بيانات المواد
-                const items = [];
-                const rows = document.querySelectorAll('#itemsBody tr');
-                rows.forEach((row, index) => {
-                    const name = row.querySelector('.item-name').value;
-                    const quantity = parseInt(row.querySelector('.item-quantity').value) || 0;
-                    const price = parseInt(row.querySelector('.item-price').value) || 0;
-                    const total = quantity * price;
+                itemsHtml += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${name}</td>
+                        <td>${quantity}</td>
+                        <td>${price.toLocaleString()}</td>
+                        <td>${total.toLocaleString()}</td>
+                    </tr>
+                `;
+            });
+            
+            // إنشاء محتوى الطباعة
+            const printContent = `
+                <div class="invoice-print">
+                    <div class="invoice-print-header">
+                        <h2>عرض السعر / ${paymentType}</h2>
+                        <p>حضرة السيد/ ${customerName}</p>
+                        <p>العنوان / النخيلة الغربية</p>
+                        <p>رقم القائمة / ${invoiceNumber} | تاريخ القائمة / ${invoiceDate} | الهاتف / ${phone}</p>
+                    </div>
                     
-                    items.push({
-                        id: index + 1,
-                        name: fixArabicText(name),
-                        quantity: quantity,
-                        price: price.toLocaleString(),
-                        total: total.toLocaleString()
-                    });
-                });
-                
-                // حساب عدد الصفحات المطلوبة بناءً على عدد المواد
-                const itemsPerPage = 15;
-                const totalPages = Math.ceil(items.length / itemsPerPage);
-                
-                // حساب حجم الخط الديناميكي
-                let fontSize = 11;
-                let headerFontSize = 16;
-                let titleFontSize = 14;
-                
-                if (items.length > 20) {
-                    fontSize = 9;
-                    headerFontSize = 14;
-                    titleFontSize = 12;
-                } else if (items.length > 15) {
-                    fontSize = 10;
-                    headerFontSize = 15;
-                    titleFontSize = 13;
-                }
-                
-                // إنشاء كل صفحة من صفحات PDF
-                for (let pageNum = 0; pageNum < totalPages; pageNum++) {
-                    if (pageNum > 0) {
-                        doc.addPage();
-                    }
+                    <table class="invoice-print-table">
+                        <thead>
+                            <tr>
+                                <th>التسلسل</th>
+                                <th>المســــــادة</th>
+                                <th>العدد</th>
+                                <th>الســــــعر (دينار)</th>
+                                <th>المجــــــموع (دينار)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${itemsHtml}
+                        </tbody>
+                    </table>
                     
-                    // إضافة شعار (إذا كان متوفراً)
-                    if (logoData) {
-                        try {
-                            doc.addImage(logoData, 'PNG', 15, 15, 25, 25);
-                        } catch (e) {
-                            console.log('لا يمكن إضافة الشعار إلى PDF');
-                        }
-                    }
+                    <div class="invoice-print-total">
+                        <p>المــجــــوع / ${totalAmount.toLocaleString()} دينار عراقي</p>
+                        <p>المــظم / ${preparedBy}</p>
+                        ${supplier ? `<p>المجهز / ${supplier}</p>` : ''}
+                    </div>
                     
-                    // العنوان الرئيسي
-                    doc.setFontSize(headerFontSize);
-                    doc.setFont('helvetica', 'bold');
-                    doc.setTextColor(26, 82, 118);
-                    doc.text(fixArabicText('مكتب الأنوار'), 105, 25, { align: 'center' });
-                    
-                    doc.setFontSize(fontSize);
-                    doc.setFont('helvetica', 'normal');
-                    doc.setTextColor(0, 0, 0);
-                    doc.text(fixArabicText('النخيلة الغربية | هاتف: 07735018949'), 105, 32, { align: 'center' });
-                    
-                    // خط فاصل
-                    doc.setDrawColor(26, 82, 118);
-                    doc.setLineWidth(0.5);
-                    doc.line(10, 37, 200, 37);
-                    
-                    // معلومات الفاتورة
-                    doc.setFontSize(titleFontSize);
-                    doc.setFont('helvetica', 'bold');
-                    doc.setTextColor(26, 82, 118);
-                    doc.text(fixArabicText('عرض السعر / ' + paymentType), 105, 47, { align: 'center' });
-                    
-                    doc.setFontSize(fontSize);
-                    doc.setFont('helvetica', 'normal');
-                    doc.setTextColor(0, 0, 0);
-                    
-                    // معلومات العميل والفاتورة
-                    doc.text(fixArabicText('حضرة السيد: ' + customerName), 20, 57);
-                    doc.text(fixArabicText('رقم القائمة: ' + invoiceNumber), 20, 64);
-                    doc.text(fixArabicText('التاريخ: ' + invoiceDate), 20, 71);
-                    
-                    doc.text(fixArabicText('المجهز: ' + supplier), 150, 57, { align: 'right' });
-                    doc.text(fixArabicText('المنضم: ' + preparedBy), 150, 64, { align: 'right' });
-                    doc.text(fixArabicText('الهاتف: ' + phone), 150, 71, { align: 'right' });
-                    
-                    // جدول المواد
-                    const startY = 85;
-                    const tableHeaders = [
-                        fixArabicText('التسلسل'),
-                        fixArabicText('المادة'),
-                        fixArabicText('العدد'),
-                        fixArabicText('السعر (دينار)'),
-                        fixArabicText('المجموع (دينار)')
-                    ];
-                    
-                    // إعداد بيانات الجدول للصفحة الحالية
-                    const startIndex = pageNum * itemsPerPage;
-                    const endIndex = Math.min(startIndex + itemsPerPage, items.length);
-                    const pageItems = items.slice(startIndex, endIndex);
-                    
-                    const tableData = pageItems.map(item => [
-                        item.id,
-                        item.name,
-                        item.quantity,
-                        item.price,
-                        item.total
-                    ]);
-                    
-                    // إضافة الجدول إلى PDF
-                    doc.autoTable({
-                        startY: startY,
-                        head: [tableHeaders],
-                        body: tableData,
-                        theme: 'grid',
-                        styles: {
-                            font: 'helvetica',
-                            fontSize: fontSize,
-                            textColor: [0, 0, 0],
-                            cellPadding: 4,
-                            lineWidth: 0.1,
-                            lineColor: [0, 0, 0],
-                            valign: 'middle'
-                        },
-                        headStyles: {
-                            fillColor: [26, 82, 118],
-                            textColor: [255, 255, 255],
-                            fontStyle: 'bold',
-                            halign: 'center'
-                        },
-                        bodyStyles: {
-                            halign: 'center'
-                        },
-                        margin: { left: 10, right: 10 },
-                        tableWidth: 'auto'
-                    });
-                    
-                    // إضافة المجموع الكلي في الصفحة الأخيرة فقط
-                    if (pageNum === totalPages - 1) {
-                        const finalY = doc.lastAutoTable.finalY + 15;
-                        
-                        // خط فوق المجموع
-                        doc.setDrawColor(0);
-                        doc.setLineWidth(0.5);
-                        doc.line(20, finalY - 5, 190, finalY - 5);
-                        
-                        doc.setFontSize(fontSize + 2);
-                        doc.setFont('helvetica', 'bold');
-                        doc.setTextColor(26, 82, 118);
-                        doc.text(fixArabicText('المجموع الكلي: ' + totalAmount + ' دينار عراقي'), 20, finalY + 5);
-                        
-                        // تذييل الصفحة
-                        const footerY = 275;
-                        doc.setFontSize(fontSize);
-                        doc.setFont('helvetica', 'normal');
-                        doc.setTextColor(100, 100, 100);
-                        doc.text(fixArabicText('شكراً لتعاملكم مع مكتب الأنوار'), 105, footerY, { align: 'center' });
-                        doc.text(fixArabicText('هذا الوصل تم إنشاؤه إلكترونياً ولا يحتاج إلى ختم'), 105, footerY + 7, { align: 'center' });
-                    }
-                    
-                    // إضافة رقم الصفحة
-                    doc.setFontSize(fontSize - 1);
-                    doc.setTextColor(150, 150, 150);
-                    doc.text(fixArabicText('صفحة ' + (pageNum + 1) + ' من ' + totalPages), 105, 290, { align: 'center' });
-                }
-                
-                // حفظ ملف PDF
-                const fileName = fixArabicText(customerName) + '_' + invoiceNumber + '.pdf';
-                doc.save(fileName);
-                
-                showNotification('تم إنشاء وتحميل ملف PDF بنجاح');
-                
-                // تحديث الإحصائيات
-                invoiceCounter++;
-                localStorage.setItem('invoiceCounter', invoiceCounter);
-                
-                // إعادة تعيين النموذج لفاتورة جديدة
-                setTimeout(resetForm, 1000);
-                
-            } catch (error) {
-                console.error('خطأ في إنشاء PDF:', error);
-                showNotification('حدث خطأ أثناء إنشاء ملف PDF: ' + error.message);
-            } finally {
-                // إخفاء شاشة التحميل بغض النظر عن النتيجة
-                setTimeout(hideLoading, 500);
+                    <div style="margin-top: 30px; text-align: center; font-size: 10pt; color: #666;">
+                        <p>شكراً لتعاملكم مع مكتب الأنوار</p>
+                        <p>هذا الوصل تم إنشاؤه إلكترونياً</p>
+                    </div>
+                </div>
+            `;
+            
+            // إضافة المحتوى إلى قسم الطباعة
+            const printContainer = document.getElementById('printContainer');
+            printContainer.innerHTML = printContent;
+            printContainer.style.display = 'block';
+            
+            // طباعة المحتوى
+            window.print();
+            
+            // إخفاء قسم الطباعة بعد الطباعة
+            setTimeout(() => {
+                printContainer.style.display = 'none';
+            }, 500);
+            
+            showNotification('تم إعداد الوصل للطباعة');
+            
+            // تحديث الإحصائيات
+            invoiceCounter++;
+            localStorage.setItem('invoiceCounter', invoiceCounter);
+            
+            // إعادة تعيين النموذج لفاتورة جديدة بعد الطباعة
+            setTimeout(resetForm, 1000);
+        }
+        
+        // توليد صورة الفاتورة
+        function generateImage() {
+            const customerName = document.getElementById('customerName').value;
+            
+            if (!customerName) {
+                showNotification('يرجى إدخال اسم الزبون أولاً');
+                return;
             }
+            
+            showNotification('جاري توليد الصورة...');
+            
+            // استخدام html2canvas لالتقاط لقطة للفاتورة
+            const element = document.getElementById('invoiceReceipt');
+            
+            html2canvas(element, {
+                scale: 2, // زيادة الدقة
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                // تحويل canvas إلى صورة
+                const imageData = canvas.toDataURL('image/png');
+                currentGeneratedImage = imageData;
+                
+                // عرض الصورة في نافذة المعاينة
+                document.getElementById('previewImage').src = imageData;
+                document.getElementById('imagePreviewContainer').classList.add('show');
+                
+                showNotification('تم توليد الصورة بنجاح');
+            }).catch(error => {
+                console.error('Error generating image:', error);
+                showNotification('حدث خطأ أثناء توليد الصورة');
+            });
+        }
+        
+        // إغلاق معاينة الصورة
+        function closeImagePreview() {
+            document.getElementById('imagePreviewContainer').classList.remove('show');
+        }
+        
+        // تحميل الصورة
+        function downloadImage() {
+            if (!currentGeneratedImage) return;
+            
+            const customerName = document.getElementById('customerName').value;
+            const link = document.createElement('a');
+            link.download = `وصل_${customerName}_${new Date().getTime()}.png`;
+            link.href = currentGeneratedImage;
+            link.click();
+            
+            showNotification('تم تحميل الصورة بنجاح');
         }
         
         // مسح النموذج
@@ -1349,7 +1625,7 @@
             addDefaultItems();
             
             // تحديث المعاينة
-            updatePreview();
+            updateReceipt();
             
             showNotification('تم مسح النموذج وإعداد فاتورة جديدة');
         }
